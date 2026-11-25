@@ -210,7 +210,7 @@ PageScroll {
         title: "Setup aids"
         glyph: Theme.gView
         Label { text: "Web view"; color: Theme.text; font.weight: Font.DemiBold }
-        SwitchRow { label: "Live view in a browser"; key: "webOn"; help: "Read-only: the live picture with the ROIs, their tones and the live spectra, for any browser on the same network. Nothing can be changed from the browser." }
+        SwitchRow { label: "Live view in a browser"; key: "webOn"; help: "Read-only: the live picture with the ROIs, their tones and the live spectra, for any browser on the same network. Nothing can be changed from the browser, but there is no password: anyone on the network can watch while it is on." }
         NumberField { visible: app.st.webOn === true; label: "Port"; value: app.st.webPort; decimals: 0; step: 1; from: 1024; to: 65535; onEdited: (v) => app.setv("webPort", Math.round(v)); onAccepted: win.releaseFocus() }
         Repeater {
             model: app.st.webOn === true ? (app.live.webUrls || []) : []

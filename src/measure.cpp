@@ -55,6 +55,16 @@ MeasureSettings MeasureSettings::fromJson(const QJsonObject& o) {
     const QJsonArray rr = rp["range_rpm"].toArray();
     if (rr.size() == 2) { s.rpmLo = rr[0].toDouble(); s.rpmHi = rr[1].toDouble(); }
     s.rpmWin = rp["track_win_s"].toDouble(s.rpmWin);
+    // settings may come from any measurement.json (recipes, batch): keep them in the ranges the UI allows
+    s.fs = std::clamp(s.fs, 500.0, 20000.0);
+    s.df = std::clamp(s.df, 0.02, 10.0);
+    s.fmax = std::clamp(s.fmax, 10.0, s.fs / 2);
+    s.toneLo = std::clamp(s.toneLo, 0.0, s.fs / 2); s.toneHi = std::clamp(s.toneHi, s.toneLo, s.fs / 2);
+    s.bandLo = std::clamp(s.bandLo, 0.0, s.fs / 2); s.bandHi = std::clamp(s.bandHi, s.bandLo, s.fs / 2);
+    s.skip = std::clamp(s.skip, 0.0, 3600.0); s.len = std::clamp(s.len, 0.001, 3600.0);
+    s.sgWinMs = std::clamp(s.sgWinMs, 5.0, 2000.0); s.sgHopMs = std::clamp(s.sgHopMs, 0.5, 500.0);
+    s.rpmMarks = std::clamp(s.rpmMarks, 1, 360); s.rpmLo = std::clamp(s.rpmLo, 1.0, 300000.0);
+    s.rpmHi = std::clamp(s.rpmHi, s.rpmLo + 1, 300001.0); s.rpmWin = std::clamp(s.rpmWin, 0.05, 30.0);
     return s;
 }
 

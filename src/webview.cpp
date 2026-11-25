@@ -207,7 +207,9 @@ void WebView::handle(Client& c) {
     const int q = target.indexOf('?');
     const QString path = q < 0 ? target : target.left(q);
     const QUrlQuery query(q < 0 ? QString() : target.mid(q + 1));
-    const int width = std::clamp(query.hasQueryItem("w") ? query.queryItemValue("w").toInt() : 960, 160, 1280);
+    // a fixed set of widths, so a client cannot fill the per-width JPEG cache with arbitrary sizes
+    const int asked = query.hasQueryItem("w") ? query.queryItemValue("w").toInt() : 960;
+    const int width = asked <= 640 ? 640 : asked <= 960 ? 960 : 1280;
     if (path == "/" || path == "/index.html") {
         s->write(reply("200 OK", "text/html; charset=utf-8", QByteArray(kPage)));
     } else if (path == "/live.json") {

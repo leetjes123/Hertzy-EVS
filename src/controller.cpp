@@ -45,7 +45,7 @@ EvsController::EvsController(const QString& source, QObject* parent) : RoiContro
         {"project", ""}, {"recName", "rec"}, {"recDesc", ""}, {"recLen", 2.0}, {"preMs", 200.0}, {"trigFactor", 4.0},
         {"amOn", false}, {"amSource", 0}, {"amRegion", false}, {"amFactor", 4.0}, {"amGap", 0.15}, {"amSkipMs", 8.0}, {"amLenMs", 50.0},
         {"amSnr", 8.0}, {"amWindow", "rect"}, {"amSignal", "velocity"}, {"amSave", false}, {"amSaveLen", 0.5},
-        {"webOn", true}, {"webPort", 8080}, {"chartRays", 36}, {"chartHz", 4.0}, {"chartInvert", true}, {"refOn", false}, {"refOpacity", 0.45}, {"autoNoiseKev", 20.0},
+        {"webOn", false}, {"webPort", 8080}, {"chartRays", 36}, {"chartHz", 4.0}, {"chartInvert", true}, {"refOn", false}, {"refOpacity", 0.45}, {"autoNoiseKev", 20.0},
         {"simTapEvery", 4.0}, {"simNoise", 0.05}, {"simRock", 1.5}, {"scale", 0.10}, {"contrast", 2.0},
         {"simFan", true}, {"simFanRpm", 600.0}, {"simBlades", 3}, {"simTape", true},
         {"rpmOn", false}, {"rpmMarks", 1}, {"rpmLo", 60.0}, {"rpmHi", 12000.0}, {"rpmWin", 1.0}, {"rpmHistS", 60.0}};
@@ -779,6 +779,8 @@ bool EvsController::pullLive(bool& spectraNew) {
 // signals at the tick rate (30 Hz), spectra + tones every third pass
 void EvsController::liveLoop() {
     int pass = 0;
+    uint64_t rpmKey = 0;
+    int64_t rpmT0 = 0;
     auto next = std::chrono::steady_clock::now();
     for (;;) {
         LiveJob job;
@@ -812,7 +814,12 @@ void EvsController::liveLoop() {
         if (spectra && job.rpmIdx >= 0 && job.rpmIdx < n) {
             ProbeTrace tr;
             int64_t tEnd = 0;
-            if (engine_->probeWindow(job.rpmIdx, job.rpm.win, tr, &tEnd) && tr.on.size() >= 0.95 * job.rpm.win * kProbeFs) {   // full window only
+            const bool got = engine_->probeWindow(job.rpmIdx, job.rpm.win, tr, &tEnd);
+            // a ROI only collects events from the moment it exists: wait one full window after any ROI / RPM change
+            // (or a stream restart) so the first readings do not come from a half-empty window
+            const uint64_t key = job.gen * 1000003ull + job.rpmIdx * 131ull + (uint64_t)(job.rpm.win * 1000) + job.rpm.marks;
+            if (got && (key != rpmKey || tEnd < rpmT0)) { rpmKey = key; rpmT0 = tEnd; }
+            if (got && tEnd - rpmT0 >= (int64_t)(job.rpm.win * 1e6)) {
                 MeasureSettings vs = job.s;
                 vs.signal = "velocity";
                 rr = estimate_rpm(live_series(job.kinds[job.rpmIdx], job.won, job.woff, tr, vs), kProbeFs, job.rpm);
