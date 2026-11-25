@@ -1,0 +1,20 @@
+# build folders (every edition) and packages
+build/
+build-*/
+dist/
+out/
+.vs/
+*.user
+CMakeUserPresets.json
+
+# recordings and their results never go into the repo
+*.raw
+*.measure/
+*.thumb.png
+recordings/
+
+# editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
