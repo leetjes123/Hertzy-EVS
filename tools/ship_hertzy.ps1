@@ -68,6 +68,11 @@ if ($Ffmpeg) {
 $lic = Join-Path $root "licenses"
 Copy-Item (Join-Path $here "..\licenses") $lic -Recurse
 Copy-Item (Join-Path $here "..\THIRD_PARTY.md") $lic
+if ($Edition -eq "full") {
+    # LUCID EULA 2(iii): runtime files unmodified, LUCID hardware only; ship LUCID's EULA + third-party list with them
+    $sdk = Split-Path -Parent $Arena
+    foreach ($pdf in "Lucid Vision Labs - EULA 20200415.pdf", "3rd-party-libs.pdf") { Copy-Item (Join-Path $sdk $pdf) (Join-Path $lic "arena") }
+} else { Remove-Item -Recurse -Force (Join-Path $lic "arena") }
 
 # launcher + recordings
 Copy-Item "$Build\hertzyevs_launcher.exe" (Join-Path $root "$Name.exe")
@@ -107,7 +112,7 @@ $(if ($Edition -eq "viewer") { "- This is the viewer: it opens and analyses reco
   camera. Draw a small ROI on the fan blades, switch on Rotation speed, and record clips to try the Analyse page." }
   else { "- The Live and Camera pages need the LUCID Triton2 EVS camera; without it they stay empty." })
 - Measurements you save are written next to the recording in the recordings folder.
-- Third-party software and its licences (Qt: LGPL v3, pocketfft: BSD): see the licenses folder.
+- Third-party software and its licences (Qt: LGPL v3, pocketfft: BSD$(if ($Edition -eq "full") { ", LUCID Arena runtime: LUCID EULA" })): see the licenses folder.
 $(if ($Ffmpeg) { "- Video export (Analyse > Playback > Export MP4) uses the bundled ffmpeg (app\ffmpeg.exe, GPL, https://ffmpeg.org)." } else { "- Video export writes MP4 when ffmpeg is on the PATH (https://ffmpeg.org), otherwise a folder of PNG frames." })
 "@ | Set-Content -Encoding utf8 (Join-Path $root "README.txt")
 

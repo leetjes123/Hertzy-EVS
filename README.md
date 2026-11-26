@@ -5,18 +5,18 @@ It records, browses and analyses on the same machine (PC or Jetson): what vibrat
 something turns.
 
 ## Download
-**[Download HertzyEVS Demo for Windows (zip)](https://github.com/leetjes123/Hertzy-EVS/releases/latest/download/HertzyEVS-Demo-win64.zip)**
-— Windows 10/11, 64-bit, nothing to install or build:
+**[Download HertzyEVS for Windows (zip)](https://github.com/leetjes123/Hertzy-EVS/releases/latest/download/HertzyEVS-win64.zip)**
+— Windows 10/11, 64-bit, nothing to install or build. For the LUCID Triton2 EVS event camera.
 
 1. Unzip the whole folder (do not run it from inside the zip).
-2. Double-click `HertzyEVS Demo.exe`. If SmartScreen warns (the app is not signed): *More info* > *Run anyway*.
+2. Double-click `HertzyEVS.exe`. If SmartScreen warns (the app is not signed): *More info* > *Run anyway*.
+3. Connect the camera (GigE/PoE network adapter set up as in LUCID's ArenaView) and open the Live page.
 
-The demo has every page, with a simulated lab bench (ringing bars + a fan with a tape mark) instead of a camera: draw a
-small ROI on the fan blades on the Live page and switch on Rotation speed. Older versions: the
-[Releases](https://github.com/leetjes123/Hertzy-EVS/releases) page.
+The zip contains the LUCID Arena SDK runtime, redistributed unmodified under LUCID's EULA for use with LUCID cameras
+only (see `licenses/arena/LUCID-NOTICE.txt` in the zip). Without a camera, the Library and Analyse pages still open
+existing `.raw` recordings. Older versions: the [Releases](https://github.com/leetjes123/Hertzy-EVS/releases) page.
 
-The camera edition for the Triton2 EVS needs the LUCID Arena SDK runtime and is not published here: build it yourself
-(see Build) with the Arena SDK installed.
+To try it without a camera, build the demo edition (simulated lab bench instead of the camera, see Build).
 
 Building the zips: `tools\ship_hertzy.ps1` (see Build).
 

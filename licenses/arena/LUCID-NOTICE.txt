@@ -1,0 +1,14 @@
+LUCID Arena SDK runtime
+=======================
+
+The camera edition of HertzyEVS contains runtime library files of the LUCID Arena SDK (Arena_*, GenTL_LUCID_*,
+lucidlog_*, lucid_metavision_sdk_*, lucid_imx63x_plugin5 and the GenICam DLLs in app\).
+
+- Copyright (c) Lucid Vision Labs, Inc. All rights reserved. They are not covered by HertzyEVS's own terms.
+- They are redistributed in their original, unmodified form, as permitted by section 2(iii) of the LUCID Vision SDK
+  End-User License Agreement (LUCID Vision Labs - EULA 20200415.pdf, in this folder), and only to support LUCID
+  hardware: this edition of HertzyEVS works with the LUCID Triton2 EVS camera only.
+- Do not copy these files out of this package for other purposes. To develop with them, get the Arena SDK from LUCID:
+  https://thinklucid.com/downloads-hub/
+- Third-party components inside the Arena runtime and their licences: 3rd-party-libs.pdf (in this folder),
+  GenICam-runtime-LICENSE.txt and Metavision-Apache-2.0.txt (Prophesee Metavision / OpenEB core, Apache 2.0).
