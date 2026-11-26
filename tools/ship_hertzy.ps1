@@ -64,6 +64,11 @@ if ($Ffmpeg) {
     if (Test-Path $lic) { Copy-Item $lic (Join-Path $app "ffmpeg-LICENSE.txt") }
 }
 
+# third-party licence texts (Qt LGPL, pocketfft BSD, ...): required when the binaries are passed on
+$lic = Join-Path $root "licenses"
+Copy-Item (Join-Path $here "..\licenses") $lic -Recurse
+Copy-Item (Join-Path $here "..\THIRD_PARTY.md") $lic
+
 # launcher + recordings
 Copy-Item "$Build\hertzyevs_launcher.exe" (Join-Path $root "$Name.exe")
 foreach ($c in $Clips) {
@@ -102,10 +107,21 @@ $(if ($Edition -eq "viewer") { "- This is the viewer: it opens and analyses reco
   camera. Draw a small ROI on the fan blades, switch on Rotation speed, and record clips to try the Analyse page." }
   else { "- The Live and Camera pages need the LUCID Triton2 EVS camera; without it they stay empty." })
 - Measurements you save are written next to the recording in the recordings folder.
+- Third-party software and its licences (Qt: LGPL v3, pocketfft: BSD): see the licenses folder.
 $(if ($Ffmpeg) { "- Video export (Analyse > Playback > Export MP4) uses the bundled ffmpeg (app\ffmpeg.exe, GPL, https://ffmpeg.org)." } else { "- Video export writes MP4 when ffmpeg is on the PATH (https://ffmpeg.org), otherwise a folder of PNG frames." })
 "@ | Set-Content -Encoding utf8 (Join-Path $root "README.txt")
 
 if (Test-Path $Zip) { Remove-Item $Zip }
-Compress-Archive -Path $root -DestinationPath $Zip -CompressionLevel Optimal
+# entries written one by one with "/" separators (Compress-Archive and ZipFile.CreateFromDirectory under Windows
+# PowerShell 5.1 write "\", which 7-Zip / unzip / macOS turn into flat file names)
+Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
+if (-not [IO.Path]::IsPathRooted($Zip)) { $Zip = Join-Path (Get-Location) $Zip }
+$za = [IO.Compression.ZipFile]::Open($Zip, [IO.Compression.ZipArchiveMode]::Create)
+try {
+    foreach ($f in Get-ChildItem $stage -Recurse -File) {
+        $entry = $f.FullName.Substring($stage.Length).TrimStart([char]92).Replace([string][char]92, '/')
+        [void][IO.Compression.ZipFileExtensions]::CreateEntryFromFile($za, $f.FullName, $entry, [IO.Compression.CompressionLevel]::Optimal)
+    }
+} finally { $za.Dispose() }
 Remove-Item -Recurse -Force $stage
 Get-Item $Zip | Select-Object FullName, @{n = "MB"; e = { [math]::Round($_.Length / 1MB, 1) } }

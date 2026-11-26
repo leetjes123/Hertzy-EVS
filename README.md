@@ -5,11 +5,18 @@ It records, browses and analyses on the same machine (PC or Jetson): what vibrat
 something turns.
 
 ## Download
-Windows 10/11, 64-bit, no installation: get a zip from the **Releases** page, unzip the whole folder and double-click
-the exe.
-- **HertzyEVS Demo**: everything, with a simulated lab bench (ringing bars + a fan with a tape mark) instead of a
-  camera. Good for trying it out.
-- **HertzyEVS**: the camera edition for the Triton2 EVS (contains the LUCID Arena runtime).
+**[Download HertzyEVS Demo for Windows (zip)](https://github.com/leetjes123/Hertzy-EVS/releases/latest/download/HertzyEVS-Demo-win64.zip)**
+— Windows 10/11, 64-bit, nothing to install or build:
+
+1. Unzip the whole folder (do not run it from inside the zip).
+2. Double-click `HertzyEVS Demo.exe`. If SmartScreen warns (the app is not signed): *More info* > *Run anyway*.
+
+The demo has every page, with a simulated lab bench (ringing bars + a fan with a tape mark) instead of a camera: draw a
+small ROI on the fan blades on the Live page and switch on Rotation speed. Older versions: the
+[Releases](https://github.com/leetjes123/Hertzy-EVS/releases) page.
+
+The camera edition for the Triton2 EVS needs the LUCID Arena SDK runtime and is not published here: build it yourself
+(see Build) with the Arena SDK installed.
 
 Building the zips: `tools\ship_hertzy.ps1` (see Build).
 

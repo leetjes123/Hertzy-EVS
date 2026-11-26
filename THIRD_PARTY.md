@@ -9,3 +9,7 @@
 | [ffmpeg](https://ffmpeg.org) (optional) | MP4 export, only when bundled with `-Ffmpeg` | GPL / LGPL, depending on the build | no |
 
 Recordings are in the Metavision EVT 3.0 `.raw` format (Prophesee), read and written by our own code (`src/evt3.*`).
+
+The release zips contain these texts in `licenses/` (from this repo's `licenses/` folder). Qt is used unmodified and
+linked dynamically, so its DLLs in `app/` can be swapped for another Qt 6.8 build; the Qt 6.8.3 source is at
+https://download.qt.io/archive/qt/6.8/6.8.3/single/.
